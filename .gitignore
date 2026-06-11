@@ -1,0 +1,51 @@
+# ========================
+# JAVA / SPRING BOOT
+# ========================
+backend/target/
+backend/*.jar
+backend/*.war
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+*.class
+*.log
+.gradle/
+build/
+
+# ========================
+# REACT / NODE
+# ========================
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# ========================
+# IDEs
+# ========================
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ========================
+# SISTEMA OPERATIVO
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# DOCKER
+# ========================
+.env
+docker-compose.override.yml
+
+# ========================
+# VARIABLES DE ENTORNO
+# ========================
+*.env
+application-local.properties

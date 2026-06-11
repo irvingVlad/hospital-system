@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+
+  # ─── BASE DE DATOS ───────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: hospital_db
+    environment:
+      POSTGRES_DB: hospitaldb
+      POSTGRES_USER: hospital_user
+      POSTGRES_PASSWORD: hospital_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hospital_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hospital_user -d hospitaldb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── BACKEND (Spring Boot) ────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hospital_backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/hospitaldb
+      SPRING_DATASOURCE_USERNAME: hospital_user
+      SPRING_DATASOURCE_PASSWORD: hospital_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hospital_net
+
+  # ─── FRONTEND (React + Vite) ──────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hospital_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - hospital_net
+
+# ─── VOLÚMENES Y RED ──────────────────────────────────
+volumes:
+  postgres_data:
+
+networks:
+  hospital_net:
+    driver: bridge
