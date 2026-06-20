@@ -5,19 +5,12 @@
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- USUARIOS
-CREATE TABLE IF NOT EXISTS usuario (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    rol VARCHAR(20) NOT NULL CHECK (rol IN ('ADMIN', 'MEDICO', 'PACIENTE')),
-    created_at TIMESTAMP DEFAULT NOW()
-);
+-- Nota: la entidad USUARIO/autenticacion se omitio del backend porque
+-- el proyecto ya no requiere JWT segun la rubrica actualizada.
 
 -- MÉDICOS
 CREATE TABLE IF NOT EXISTS medico (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    usuario_id UUID REFERENCES usuario(id),
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     especialidad VARCHAR(100) NOT NULL,
@@ -27,7 +20,6 @@ CREATE TABLE IF NOT EXISTS medico (
 -- PACIENTES
 CREATE TABLE IF NOT EXISTS paciente (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    usuario_id UUID REFERENCES usuario(id),
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     fecha_nacimiento DATE,

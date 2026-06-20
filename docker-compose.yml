@@ -1,8 +1,5 @@
-version: '3.8'
-
 services:
 
-  # ─── BASE DE DATOS ───────────────────────────────────
   db:
     image: postgres:16-alpine
     container_name: hospital_db
@@ -11,7 +8,7 @@ services:
       POSTGRES_USER: hospital_user
       POSTGRES_PASSWORD: hospital_pass
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -23,7 +20,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ─── BACKEND (Spring Boot) ────────────────────────────
   backend:
     build:
       context: ./backend
@@ -42,7 +38,6 @@ services:
     networks:
       - hospital_net
 
-  # ─── FRONTEND (React + Vite) ──────────────────────────
   frontend:
     build:
       context: ./frontend
@@ -55,7 +50,6 @@ services:
     networks:
       - hospital_net
 
-# ─── VOLÚMENES Y RED ──────────────────────────────────
 volumes:
   postgres_data:
 
